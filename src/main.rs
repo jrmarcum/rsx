@@ -7,7 +7,7 @@ use toml_edit::{DocumentMut, Item};
 use update_informer::{Check, registry};
 
 #[derive(Parser)]
-#[command(name = "rsx", version, about = "Standard-compliant Cargo Script manager")]
+#[command(name = "rsxtk", version, about = "Standard-compliant Cargo Script manager")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -83,7 +83,7 @@ fn parse_manifest(content: &str) -> Option<(usize, usize, DocumentMut)> {
 
 async fn get_latest_version(name: &str) -> String {
     let client = reqwest::Client::builder()
-        .user_agent("rsx-cli")
+        .user_agent("rsxtk-cli")
         .timeout(std::time::Duration::from_secs(2)) // Don't hang the CLI
         .build()
         .ok();
@@ -209,7 +209,7 @@ fn format_script(path: &PathBuf) -> Result<()> {
 }
 
 fn check_updates() {
-    let informer = update_informer::new(registry::Crates, "rsx", env!("CARGO_PKG_VERSION"));
+    let informer = update_informer::new(registry::Crates, "rsxtk", env!("CARGO_PKG_VERSION"));
     if let Some(new_version) = informer.check_version().ok().flatten() {
         println!("🚀 New version available: {} -> {}", env!("CARGO_PKG_VERSION"), new_version);
     }
