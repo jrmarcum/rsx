@@ -150,8 +150,10 @@ async fn add_dep(path: &PathBuf, name: &str, features: Vec<String>) -> Result<()
 fn run_script(path: &PathBuf, args: Vec<String>) -> Result<()> {
     let content = fs::read_to_string(path)?;
     let mut dep_flags = Vec::new();
+    let mut script_body = content.clone();
 
-    if let Some((_start, _end, doc)) = parse_manifest(&content) {
+    // 1. Parse the standard manifest to get dependencies
+    if let Some((_start, end, doc)) = parse_manifest(&content) {
         if let Some(deps) = doc.get("dependencies").and_then(|d| d.as_table()) {
             for (name, item) in deps.iter() {
                 dep_flags.push("--dep".to_string());
@@ -173,13 +175,34 @@ fn run_script(path: &PathBuf, args: Vec<String>) -> Result<()> {
                 dep_flags.push(spec);
             }
         }
+        
+        // 2. Locate the end of the front-matter block to strip it
+        // We find the first newline after the closing ---
+        let content_after_toml = &content[end..];
+        if let Some(first_newline) = content_after_toml.find('\n') {
+            script_body = content_after_toml[first_newline..].trim_start().to_string();
+        }
     }
 
-    Command::new("rust-script")
+    // 3. Pipe the clean code into rust-script for max speed
+    // Passing "-" tells rust-script to read from stdin
+    let mut child = Command::new("rust-script")
         .args(&dep_flags)
-        .arg(path)
+        .arg("-") 
         .args(args)
-        .status()?;
+        .stdin(std::process::Stdio::piped())
+        .spawn()
+        .map_err(|e| anyhow::anyhow!("Failed to spawn rust-script: {}. Is it installed?", e))?;
+
+    if let Some(mut stdin) = child.stdin.take() {
+        use std::io::Write;
+        stdin.write_all(script_body.as_bytes())?;
+    }
+
+    let status = child.wait()?;
+    if !status.success() {
+        anyhow::bail!("Script exited with error status: {}", status);
+    }
 
     Ok(())
 }
