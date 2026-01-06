@@ -1,6 +1,6 @@
 [package]
 name = "rsxtk"
-version = "0.2.3"
+version = "0.2.4"
 authors = ["jrmarcum"]
 edition = "2021"
 description = "A standard-compliant Cargo Script manager for high-performance execution and WASM builds."

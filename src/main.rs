@@ -178,15 +178,40 @@ fn parse_manifest(content: &str) -> Option<(usize, usize, DocumentMut)> {
 async fn add_dep(path: &PathBuf, name: &str, features: Vec<String>) -> Result<()> {
     let content = fs::read_to_string(path).unwrap_or_default();
     let (start, end, mut doc) = parse_manifest(&content).unwrap_or_else(|| (0, 0, DocumentMut::new()));
+    
+    // 1. Ensure the dependencies table exists
     let deps = doc.entry("dependencies").or_insert(toml_edit::Item::Table(toml_edit::Table::new()));
-    deps[name] = toml_edit::value("*"); 
+    
+    // 2. Determine the version (using "*" as a placeholder or fetch from API)
+    let version = "*"; 
+
+    if features.is_empty() {
+        // Use the simple string format: name = "version"
+        deps[name] = toml_edit::value(version);
+    } else {
+        // Use the inline table format: name = { version = "...", features = [...] }
+        let mut table = toml_edit::InlineTable::default();
+        table.insert("version", toml_edit::Value::from(version));
+        
+        let mut feat_array = toml_edit::Array::default();
+        for f in features {
+            feat_array.push(f);
+        }
+        table.insert("features", toml_edit::Value::from(feat_array));
+        
+        deps[name] = toml_edit::value(toml_edit::Value::InlineTable(table));
+    }
+
+    // 3. Reconstruct and save the file
     let mut final_content = content.clone();
     if start == 0 {
         final_content = format!("---\n{}---\n\n{}", doc, content);
     } else {
         final_content.replace_range(start..end, &doc.to_string());
     }
+    
     fs::write(path, final_content)?;
+    println!("✅ Added {} with features to {}", name, path.display());
     Ok(())
 }
 
