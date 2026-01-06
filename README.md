@@ -1,4 +1,4 @@
-# rsx 🦀
+# rsxtk 🦀
 
 A high-performance CLI tool to manage and run **Cargo Scripts** using the official **RFC 3502** front-matter format.
 
