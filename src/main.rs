@@ -105,7 +105,7 @@ async fn get_latest_version(name: &str) -> String {
     "*".to_string()
 }
 
-// --- Commands ---
+// --- Commands Implementation ---
 
 async fn add_dep(path: &PathBuf, name: &str, features: Vec<String>) -> Result<()> {
     let content = fs::read_to_string(path).unwrap_or_default();
@@ -192,13 +192,13 @@ async fn build_script(path: &PathBuf, target: BuildTarget, out: Option<PathBuf>)
 
     println!("⚒️ Compiling {} for {}...", path.display(), triple);
 
-    // Native build: Use the onboard manifest directly.
-    // We pass RUSTFLAGS to allow the experimental frontmatter feature.
+    // FIX: Using --manifest-path ensures cargo recognizes the script file correctly.
     let status = Command::new("cargo")
         .arg("+nightly")
         .arg("-Zscript")
         .arg("build")
         .arg("--release")
+        .arg("--manifest-path")
         .arg(path) 
         .arg("--target")
         .arg(triple)
@@ -207,6 +207,7 @@ async fn build_script(path: &PathBuf, target: BuildTarget, out: Option<PathBuf>)
 
     if status.success() {
         let stem = path.file_stem().unwrap().to_str().unwrap();
+        // The output binary is located in target/[triple]/release/[stem].wasm
         let wasm_src = format!("target/{}/release/{}.wasm", triple, stem);
         let final_out = out.unwrap_or_else(|| {
             let mut p = path.clone();
@@ -252,7 +253,11 @@ fn format_script(path: &PathBuf) -> Result<()> {
 }
 
 fn test_script(path: &PathBuf) -> Result<()> {
-    Command::new("cargo").args(["+nightly", "-Zscript", "test"]).arg(path).status()?;
+    // FIX: Also use --manifest-path for tests to ensure consistency
+    Command::new("cargo")
+        .args(["+nightly", "-Zscript", "test", "--manifest-path"])
+        .arg(path)
+        .status()?;
     Ok(())
 }
 
