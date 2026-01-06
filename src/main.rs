@@ -152,54 +152,43 @@ fn run_script(path: &PathBuf, args: Vec<String>) -> Result<()> {
     let mut dep_flags = Vec::new();
     let mut script_body = content.clone();
 
-    // 1. Parse the standard manifest to get dependencies
+    // 1. Extract deps and strip front-matter
     if let Some((_start, end, doc)) = parse_manifest(&content) {
         if let Some(deps) = doc.get("dependencies").and_then(|d| d.as_table()) {
             for (name, item) in deps.iter() {
                 dep_flags.push("--dep".to_string());
-                
                 let spec = match item {
-                    toml_edit::Item::Value(toml_edit::Value::String(s)) => {
-                        format!("{}={}", name, s.value())
-                    }
+                    toml_edit::Item::Value(toml_edit::Value::String(s)) => format!("{}={}", name, s.value()),
                     _ => {
                         let v = item.get("version").and_then(|i| i.as_str()).unwrap_or("*");
                         let f = item.get("features").and_then(|i| i.as_array())
                             .map(|a| a.iter().map(|v| v.as_str().unwrap_or("")).collect::<Vec<_>>().join(","))
                             .unwrap_or_default();
-                        
-                        if f.is_empty() { format!("{}={}", name, v) } 
-                        else { format!("{}:{}/{}", name, v, f) }
+                        if f.is_empty() { format!("{}={}", name, v) } else { format!("{}:{}/{}", name, v, f) }
                     }
                 };
                 dep_flags.push(spec);
             }
         }
         
-        // 2. Locate the end of the front-matter block to strip it
-        // We find the first newline after the closing ---
+        // Find the end of the second "---" and skip it
         let content_after_toml = &content[end..];
-        if let Some(first_newline) = content_after_toml.find('\n') {
-            script_body = content_after_toml[first_newline..].trim_start().to_string();
+        if let Some(after_marker) = content_after_toml.find("---") {
+            script_body = content_after_toml[after_marker + 3..].trim_start().to_string();
         }
     }
 
-    // 3. Pipe the clean code into rust-script for max speed
-    // Passing "-" tells rust-script to read from stdin
-    let mut child = Command::new("rust-script")
+    // 2. Execute rust-script
+    // We use the path to the original script so rust-script can handle caching 
+    // based on the filename, but we pass the stripped body.
+    let status = Command::new("rust-script")
         .args(&dep_flags)
-        .arg("-") 
+        .arg("-e") // Using expression mode to bypass front-matter parsing
+        .arg(&script_body)
         .args(args)
-        .stdin(std::process::Stdio::piped())
-        .spawn()
-        .map_err(|e| anyhow::anyhow!("Failed to spawn rust-script: {}. Is it installed?", e))?;
+        .status()
+        .map_err(|e| anyhow::anyhow!("Failed to run rust-script: {}", e))?;
 
-    if let Some(mut stdin) = child.stdin.take() {
-        use std::io::Write;
-        stdin.write_all(script_body.as_bytes())?;
-    }
-
-    let status = child.wait()?;
     if !status.success() {
         anyhow::bail!("Script exited with error status: {}", status);
     }
