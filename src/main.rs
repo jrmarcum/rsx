@@ -171,23 +171,30 @@ fn run_script(path: &PathBuf, args: Vec<String>) -> Result<()> {
             }
         }
         
-        // Find the end of the second "---" and skip it
+        // Skip the closing --- and the newline
         let content_after_toml = &content[end..];
         if let Some(after_marker) = content_after_toml.find("---") {
             script_body = content_after_toml[after_marker + 3..].trim_start().to_string();
         }
     }
 
-    // 2. Execute rust-script
-    // We use the path to the original script so rust-script can handle caching 
-    // based on the filename, but we pass the stripped body.
+    // 2. Create a temporary file to preserve the script's structure
+    let temp_dir = std::env::temp_dir();
+    // Use a hash of the path or just a fixed name to keep the cache consistent
+    let temp_path = temp_dir.join("rsxtk_exec.rs");
+    fs::write(&temp_path, script_body)?;
+
+    // 3. Execute rust-script on the temporary file
     let status = Command::new("rust-script")
         .args(&dep_flags)
-        .arg("-e") // Using expression mode to bypass front-matter parsing
-        .arg(&script_body)
+        .arg(&temp_path)
         .args(args)
         .status()
         .map_err(|e| anyhow::anyhow!("Failed to run rust-script: {}", e))?;
+
+    // Cleanup (optional: keeping it can help rust-script's cache, 
+    // but deleting it is cleaner)
+    let _ = fs::remove_file(temp_path);
 
     if !status.success() {
         anyhow::bail!("Script exited with error status: {}", status);
