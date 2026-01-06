@@ -11,9 +11,7 @@ use update_informer::{Check, registry};
     name = "rsxtk",
     version,
     about = "High-performance manager for Cargo-standard Rust scripts",
-    long_about = "rsxtk bridges the gap between Cargo's RFC 3502 (front-matter) and rust-script's speed. \
-                  It allows you to manage dependencies in standard scripts while executing them with \
-                  optimized caching.",
+    long_about = "rsxtk bridges the gap between Cargo's RFC 3502 (front-matter) and rust-script's speed.",
     help_template = "{about-section}\n\nVersion: {version}\n\nUSAGE:\n  {usage}\n\nCOMMANDS:\n{subcommands}\n\nOPTIONS:\n{options}"
 )]
 struct Cli {
@@ -25,11 +23,8 @@ struct Cli {
 enum Commands {
     /// ➕ Add a dependency to the script's front-matter
     Add {
-        /// The .rs script to modify
         script: PathBuf,
-        /// Name of the crate (e.g., 'serde')
         dependency: String,
-        /// Optional list of features (comma-separated)
         #[arg(short, long, value_delimiter = ',')]
         features: Vec<String>,
     },
@@ -45,20 +40,15 @@ enum Commands {
     Test { script: PathBuf },
     /// ⚙️ Build the script into a standalone WebAssembly (WASI) module
     Build {
-        /// The .rs script to compile
         script: PathBuf,
-        /// Target architecture
         #[arg(value_enum, default_value_t = BuildTarget::Wasi)]
         target: BuildTarget,
-        /// Explicit output path (defaults to script_name.wasm)
         #[arg(short, long)]
         out: Option<PathBuf>,
     },
     /// 🏃 Run the script using the rust-script engine (Fast execution)
     Run {
-        /// The .rs script to execute
         script: PathBuf,
-        /// Arguments to pass through to the script
         #[arg(trailing_var_arg = true, allow_hyphen_values = true)]
         args: Vec<String>,
     },
@@ -84,7 +74,7 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-// --- Logic Core ---
+// --- Manifest Parsing ---
 
 fn parse_manifest(content: &str) -> Option<(usize, usize, DocumentMut)> {
     if !content.starts_with("---") { return None; }
@@ -115,7 +105,7 @@ async fn get_latest_version(name: &str) -> String {
     "*".to_string()
 }
 
-// --- Commands Implementation ---
+// --- Commands ---
 
 async fn add_dep(path: &PathBuf, name: &str, features: Vec<String>) -> Result<()> {
     let content = fs::read_to_string(path).unwrap_or_default();
@@ -170,16 +160,16 @@ fn run_script(path: &PathBuf, args: Vec<String>) -> Result<()> {
                 dep_flags.push(spec);
             }
         }
-        let content_after_toml = &content[end..];
-        if let Some(after_marker) = content_after_toml.find("---") {
-            script_body = content_after_toml[after_marker + 3..].trim_start().to_string();
+        let after = &content[end..];
+        if let Some(pos) = after.find("---") {
+            script_body = after[pos + 3..].trim_start().to_string();
         }
     }
 
     let temp_dir = std::env::temp_dir().join("rsxtk_cache");
     fs::create_dir_all(&temp_dir)?;
-    let file_stem = path.file_stem().and_then(|s| s.to_str()).unwrap_or("script");
-    let temp_path = temp_dir.join(format!("{}_exec.rs", file_stem));
+    let stem = path.file_stem().and_then(|s| s.to_str()).unwrap_or("script");
+    let temp_path = temp_dir.join(format!("{}_exec.rs", stem));
     
     let should_write = fs::read_to_string(&temp_path).map(|old| old != script_body).unwrap_or(true);
     if should_write { fs::write(&temp_path, script_body)?; }
@@ -200,40 +190,36 @@ async fn build_script(path: &PathBuf, target: BuildTarget, out: Option<PathBuf>)
         BuildTarget::Wasi => "wasm32-wasip1",
     };
 
-    let content = fs::read_to_string(path)?;
-    let mut script_body = content.clone();
-    if let Some((_s, end, _d)) = parse_manifest(&content) {
-        let after = &content[end..];
-        if let Some(pos) = after.find("---") {
-            script_body = after[pos + 3..].trim_start().to_string();
-        }
-    }
-
-    let temp_dir = std::env::temp_dir().join("rsxtk_build");
-    fs::create_dir_all(&temp_dir)?;
-    let temp_path = temp_dir.join("temp_build.rs");
-    fs::write(&temp_path, script_body)?;
-
-    Command::new("rustup").args(["target", "add", triple]).status()?;
     println!("⚒️ Compiling {} for {}...", path.display(), triple);
 
+    // Native build: Use the onboard manifest directly.
+    // We pass RUSTFLAGS to allow the experimental frontmatter feature.
     let status = Command::new("cargo")
-        .args(["+nightly", "-Zscript", "build", "--release"])
-        .arg(&temp_path)
-        .args(["--target", triple])
+        .arg("+nightly")
+        .arg("-Zscript")
+        .arg("build")
+        .arg("--release")
+        .arg(path) 
+        .arg("--target")
+        .arg(triple)
+        .env("RUSTFLAGS", "-Z crate-attr=\"feature(frontmatter)\"")
         .status()?;
 
     if status.success() {
-        let wasm_src = format!("target/{}/release/temp_build.wasm", triple);
-        let final_name = out.unwrap_or_else(|| {
+        let stem = path.file_stem().unwrap().to_str().unwrap();
+        let wasm_src = format!("target/{}/release/{}.wasm", triple, stem);
+        let final_out = out.unwrap_or_else(|| {
             let mut p = path.clone();
             p.set_extension("wasm");
             PathBuf::from(p.file_name().unwrap())
         });
-        fs::copy(&wasm_src, &final_name)?;
-        println!("✨ WASI module created: {}", final_name.display());
+
+        fs::copy(&wasm_src, &final_out)?;
+        println!("✨ WASM/WASI module created: {}", final_out.display());
+    } else {
+        anyhow::bail!("Build failed.");
     }
-    let _ = fs::remove_file(temp_path);
+
     Ok(())
 }
 
@@ -261,7 +247,7 @@ fn list_deps(path: &PathBuf) -> Result<()> {
 }
 
 fn format_script(path: &PathBuf) -> Result<()> {
-    Command::new("rustfmt").arg(path).status().context("rustfmt failed")?;
+    Command::new("rustfmt").arg(path).status()?;
     Ok(())
 }
 
