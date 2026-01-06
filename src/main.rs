@@ -171,30 +171,34 @@ fn run_script(path: &PathBuf, args: Vec<String>) -> Result<()> {
             }
         }
         
-        // Skip the closing --- and the newline
+        // Find the second "---" to strip the front-matter
         let content_after_toml = &content[end..];
         if let Some(after_marker) = content_after_toml.find("---") {
             script_body = content_after_toml[after_marker + 3..].trim_start().to_string();
         }
     }
 
-    // 2. Create a temporary file to preserve the script's structure
-    let temp_dir = std::env::temp_dir();
-    // Use a hash of the path or just a fixed name to keep the cache consistent
-    let temp_path = temp_dir.join("rsxtk_exec.rs");
-    fs::write(&temp_path, script_body)?;
+    // 2. Create a STABLE temporary filename
+    // We use the original filename so rust-script can cache it correctly.
+    let temp_dir = std::env::temp_dir().join("rsxtk_cache");
+    fs::create_dir_all(&temp_dir)?;
+    
+    let file_stem = path.file_stem().and_then(|s| s.to_str()).unwrap_or("script");
+    let temp_path = temp_dir.join(format!("{}_exec.rs", file_stem));
+    
+    // 3. Only write if the content has changed (preserves file metadata for rust-script)
+    let should_write = fs::read_to_string(&temp_path).map(|old| old != script_body).unwrap_or(true);
+    if should_write {
+        fs::write(&temp_path, script_body)?;
+    }
 
-    // 3. Execute rust-script on the temporary file
+    // 4. Execute rust-script on the stable temporary file
     let status = Command::new("rust-script")
         .args(&dep_flags)
         .arg(&temp_path)
         .args(args)
         .status()
         .map_err(|e| anyhow::anyhow!("Failed to run rust-script: {}", e))?;
-
-    // Cleanup (optional: keeping it can help rust-script's cache, 
-    // but deleting it is cleaner)
-    let _ = fs::remove_file(temp_path);
 
     if !status.success() {
         anyhow::bail!("Script exited with error status: {}", status);
