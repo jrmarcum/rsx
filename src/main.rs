@@ -71,30 +71,30 @@ async fn main() -> Result<()> {
 // --- Manifest Logic ---
 
 fn parse_manifest(content: &str) -> Option<(usize, usize, DocumentMut)> {
-    // Look for the first three dashes
     if !content.starts_with("---") { return None; }
     
-    // Find the start and end of the TOML block
-    let start_marker = "---";
+    // Find the end of the first line (the opening ---)
     let first_line_end = content.find('\n')?;
     let start_pos = first_line_end + 1;
     
-    // Find the closing --- (skipping the first one)
-    let end_pos = content[start_pos..].find("---")? + start_pos;
+    // Find the closing --- marker
+    let end_marker_pos = content[start_pos..].find("---")?;
+    let end_pos = start_pos + end_marker_pos;
     
     let toml_str = &content[start_pos..end_pos];
     let doc = toml_str.parse::<DocumentMut>().ok()?;
     
-    // We return the positions including the markers for editing purposes
-    Some((0, end_pos + 3, doc))
+    // Return indices for the start and end of the TOML block (for replace_range)
+    Some((start_pos, end_pos, doc))
 }
 
 async fn get_latest_version(name: &str) -> String {
     let client = reqwest::Client::builder()
         .user_agent("rsxtk-cli")
-        .timeout(std::time::Duration::from_secs(2)) // Don't hang the CLI
+        .timeout(std::time::Duration::from_secs(2))
         .build()
         .ok();
+    
     if let Some(c) = client {
         if let Ok(resp) = c.get(format!("https://crates.io/api/v1/crates/{}", name)).send().await {
             if let Ok(json) = resp.json::<serde_json::Value>().await {
@@ -115,7 +115,6 @@ async fn add_dep(path: &PathBuf, name: &str, features: Vec<String>) -> Result<()
     let (start, end, mut doc) = parse_manifest(&content).unwrap_or((0, 0, DocumentMut::new()));
 
     if features.is_empty() {
-        // Direct insertion using the value helper (requires toml_edit::value)
         doc["dependencies"][name] = toml_edit::value(version);
     } else {
         let mut table = toml_edit::InlineTable::default();
@@ -125,13 +124,12 @@ async fn add_dep(path: &PathBuf, name: &str, features: Vec<String>) -> Result<()
         for f in features { feats.push(f); }
         table.insert("features", toml_edit::Value::from(feats));
         
-        // Direct insertion into the document
         doc["dependencies"][name] = toml_edit::Item::Value(toml_edit::Value::InlineTable(table));
     }
 
     let mut final_content = content.clone();
     if start == 0 {
-        final_content = format!("---\n{}---\n\n{}", doc, content);
+        final_content = format!("---\n[dependencies]\n{}---\n\n{}", doc, content);
     } else {
         final_content.replace_range(start..end, &doc.to_string());
     }
@@ -145,17 +143,30 @@ fn run_script(path: &PathBuf, args: Vec<String>) -> Result<()> {
     let content = fs::read_to_string(path)?;
     let mut dep_flags = Vec::new();
 
-    if let Some((_s, _e, doc)) = parse_manifest(&content) {
+    if let Some((_start, _end, doc)) = parse_manifest(&content) {
         if let Some(deps) = doc.get("dependencies").and_then(|d| d.as_table()) {
             for (name, item) in deps.iter() {
                 dep_flags.push("--dep".to_string());
-                // ... (rest of your matching logic)
-                println!("🛠️ Found dependency: {}", name); // ADD THIS LINE FOR DEBUGGING
+                
+                let spec = match item {
+                    toml_edit::Item::Value(toml_edit::Value::String(s)) => {
+                        format!("{}={}", name, s.value())
+                    }
+                    _ => {
+                        let v = item.get("version").and_then(|i| i.as_str()).unwrap_or("*");
+                        let f = item.get("features").and_then(|i| i.as_array())
+                            .map(|a| a.iter().map(|v| v.as_str().unwrap_or("")).collect::<Vec<_>>().join(","))
+                            .unwrap_or_default();
+                        
+                        if f.is_empty() { format!("{}={}", name, v) } 
+                        else { format!("{}:{}/{}", name, v, f) }
+                    }
+                };
+                dep_flags.push(spec);
             }
         }
     }
 
-    // Call rust-script
     Command::new("rust-script")
         .args(&dep_flags)
         .arg(path)
@@ -201,7 +212,7 @@ fn remove_dep(path: &PathBuf, name: &str) -> Result<()> {
 
 fn list_deps(path: &PathBuf) -> Result<()> {
     let content = fs::read_to_string(path)?;
-    if let Some((_, _, doc)) = parse_manifest(&content) {
+    if let Some((_start, _end, doc)) = parse_manifest(&content) {
         println!("📦 Dependencies in {}:", path.display());
         if let Some(deps) = doc.get("dependencies").and_then(|d| d.as_table()) {
             for (n, v) in deps.iter() { println!("  ├── {:<15} : {}", n, v); }
