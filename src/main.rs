@@ -193,7 +193,7 @@ async fn build_script(path: &PathBuf, target: BuildTarget, out: Option<PathBuf>)
     println!("⚒️ Compiling {} for {}...", path.display(), triple);
 
     // FIX: Using --manifest-path ensures cargo recognizes the script file correctly.
-    let status = Command::new("cargo")
+let status = Command::new("cargo")
         .arg("+nightly")
         .arg("-Zscript")
         .arg("build")
@@ -202,7 +202,8 @@ async fn build_script(path: &PathBuf, target: BuildTarget, out: Option<PathBuf>)
         .arg(path) 
         .arg("--target")
         .arg(triple)
-        .env("RUSTFLAGS", "-Z crate-attr=\"feature(frontmatter)\"")
+        // Corrected syntax: no internal quotes around the feature name
+        .env("RUSTFLAGS", "-Z crate-attr=feature(frontmatter)")
         .status()?;
 
     if status.success() {
