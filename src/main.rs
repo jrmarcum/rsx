@@ -71,14 +71,22 @@ async fn main() -> Result<()> {
 // --- Manifest Logic ---
 
 fn parse_manifest(content: &str) -> Option<(usize, usize, DocumentMut)> {
-    if !content.starts_with("---\n") { return None; }
-    let lines: Vec<&str> = content.lines().collect();
-    let end_idx = lines.iter().skip(1).position(|&l| l.trim() == "---")? + 1;
-    let toml_str = lines[1..end_idx].join("\n");
+    // Look for the first three dashes
+    if !content.starts_with("---") { return None; }
+    
+    // Find the start and end of the TOML block
+    let start_marker = "---";
+    let first_line_end = content.find('\n')?;
+    let start_pos = first_line_end + 1;
+    
+    // Find the closing --- (skipping the first one)
+    let end_pos = content[start_pos..].find("---")? + start_pos;
+    
+    let toml_str = &content[start_pos..end_pos];
     let doc = toml_str.parse::<DocumentMut>().ok()?;
-    let start_byte = lines[0].len() + 1;
-    let end_byte = lines[..end_idx].join("\n").len();
-    Some((start_byte, end_byte, doc))
+    
+    // We return the positions including the markers for editing purposes
+    Some((0, end_pos + 3, doc))
 }
 
 async fn get_latest_version(name: &str) -> String {
@@ -137,33 +145,19 @@ fn run_script(path: &PathBuf, args: Vec<String>) -> Result<()> {
     let content = fs::read_to_string(path)?;
     let mut dep_flags = Vec::new();
 
-    // The underscores satisfy the compiler for the run command
-    if let Some((_start, _end, doc)) = parse_manifest(&content) {
+    if let Some((_s, _e, doc)) = parse_manifest(&content) {
         if let Some(deps) = doc.get("dependencies").and_then(|d| d.as_table()) {
             for (name, item) in deps.iter() {
                 dep_flags.push("--dep".to_string());
-                
-                let spec = match item {
-                    toml_edit::Item::Value(toml_edit::Value::String(s)) => {
-                        format!("{}={}", name, s.value())
-                    }
-                    _ => {
-                        let v = item.get("version").and_then(|i| i.as_str()).unwrap_or("*");
-                        let f = item.get("features").and_then(|i| i.as_array())
-                            .map(|a| a.iter().map(|v| v.as_str().unwrap_or("")).collect::<Vec<_>>().join(","))
-                            .unwrap_or_default();
-                        
-                        if f.is_empty() { format!("{}={}", name, v) } 
-                        else { format!("{}:{}/{}", name, v, f) }
-                    }
-                };
-                dep_flags.push(spec);
+                // ... (rest of your matching logic)
+                println!("🛠️ Found dependency: {}", name); // ADD THIS LINE FOR DEBUGGING
             }
         }
     }
 
+    // Call rust-script
     Command::new("rust-script")
-        .args(dep_flags)
+        .args(&dep_flags)
         .arg(path)
         .args(args)
         .status()?;
