@@ -69,10 +69,15 @@ async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<Pa
     let (_start, end, doc) = parse_manifest(&content)
         .context("Script requires a --- front-matter block for building.")?;
 
-    // 1. Setup Synthetic Project
+    // 1. Setup LOCAL Project Folder (Avoids %TEMP% permission issues)
     let stem = path.file_stem().unwrap().to_str().unwrap();
-    let temp_build_dir = std::env::temp_dir().join(format!("rsxtk_build_{}", stem));
-    let src_dir = temp_build_dir.join("src");
+    let local_build_dir = std::env::current_dir()?.join(format!(".rsxtk_build_{}", stem));
+    let src_dir = local_build_dir.join("src");
+    
+    // Clean start: Remove if exists, then create
+    if local_build_dir.exists() {
+        let _ = fs::remove_dir_all(&local_build_dir);
+    }
     fs::create_dir_all(&src_dir)?;
 
     // 2. Generate Cargo.toml
@@ -82,40 +87,42 @@ async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<Pa
     pkg.insert("version", toml_edit::value("0.1.0"));
     pkg.insert("edition", toml_edit::value("2021"));
     manifest.insert("package", toml_edit::Item::Table(pkg));
-    fs::write(temp_build_dir.join("Cargo.toml"), manifest.to_string())?;
+    fs::write(local_build_dir.join("Cargo.toml"), manifest.to_string())?;
 
-    // 3. Extract PURE Rust source (The "Stripper")
+    // 3. Extract source (The "Stripper")
     let after_first_marker = &content[end..];
-    // We look for the closing --- to ensure we don't include it in the source file
     let actual_code = match after_first_marker.find("---") {
         Some(pos) => after_first_marker[pos + 3..].trim_start(),
         None => after_first_marker.trim_start(),
     };
     fs::write(src_dir.join("main.rs"), actual_code)?;
 
-    println!("⚒️ Compiling {} for {} (Stable)...", path.display(), triple);
+    println!("⚒️ Compiling {} for {}...", path.display(), triple);
 
-    // 4. Run Standard Build
+    // 4. Run Build from the Local Dir
     let status = Command::new("cargo")
         .arg("build")
         .arg("--release")
         .arg("--target")
         .arg(triple)
-        .current_dir(&temp_build_dir)
-        .status()?;
+        .current_dir(&local_build_dir) // Crucial: Execute inside the local crate
+        .status()
+        .context("Failed to spawn 'cargo build'. Is cargo in your PATH?")?;
 
     if status.success() {
-        let wasm_src = temp_build_dir.join("target").join(triple).join("release").join(format!("{}.wasm", stem));
+        let wasm_src = local_build_dir.join("target").join(triple).join("release").join(format!("{}.wasm", stem));
         let final_out = out.unwrap_or_else(|| {
             let mut p = path.clone();
             p.set_extension("wasm");
             PathBuf::from(p.file_name().unwrap())
         });
+
         fs::copy(&wasm_src, &final_out)?;
         println!("✨ Success! Module created: {}", final_out.display());
     }
 
-    let _ = fs::remove_dir_all(temp_build_dir);
+    // Cleanup local build files
+    let _ = fs::remove_dir_all(local_build_dir);
     Ok(())
 }
 
