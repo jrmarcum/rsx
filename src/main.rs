@@ -112,10 +112,16 @@ async fn add_dep(path: &PathBuf, name: &str, features: Vec<String>) -> Result<()
     println!("🔍 Searching Crates.io for {}...", name);
     let version = get_latest_version(name).await;
     
-    let (start, end, mut doc) = parse_manifest(&content).unwrap_or((0, 0, DocumentMut::new()));
+    let (start, end, mut doc) = parse_manifest(&content).unwrap_or_else(|| {
+        // If no manifest exists, start with a fresh one
+        (0, 0, DocumentMut::new())
+    });
 
+    // Ensure we are working within the [dependencies] table
+    let deps = doc.entry("dependencies").or_insert(toml_edit::Item::Table(toml_edit::Table::new()));
+    
     if features.is_empty() {
-        doc["dependencies"][name] = toml_edit::value(version);
+        deps[name] = toml_edit::value(version);
     } else {
         let mut table = toml_edit::InlineTable::default();
         table.insert("version", toml_edit::Value::from(version));
@@ -124,13 +130,15 @@ async fn add_dep(path: &PathBuf, name: &str, features: Vec<String>) -> Result<()
         for f in features { feats.push(f); }
         table.insert("features", toml_edit::Value::from(feats));
         
-        doc["dependencies"][name] = toml_edit::Item::Value(toml_edit::Value::InlineTable(table));
+        deps[name] = toml_edit::Item::Value(toml_edit::Value::InlineTable(table));
     }
 
     let mut final_content = content.clone();
     if start == 0 {
-        final_content = format!("---\n[dependencies]\n{}---\n\n{}", doc, content);
+        // Use a clean format for brand new manifests
+        final_content = format!("---\n{}---\n\n{}", doc, content);
     } else {
+        // Replace the existing TOML block precisely
         final_content.replace_range(start..end, &doc.to_string());
     }
     
