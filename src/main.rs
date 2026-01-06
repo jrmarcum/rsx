@@ -1,9 +1,9 @@
-use anyhow::{Context, Result};
+use anyhow::Result;
 use clap::{Parser, Subcommand, ValueEnum};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::process::Command;
-use toml_edit::{value, DocumentMut, Item};
+use toml_edit::{DocumentMut, Item};
 use update_informer::{Check, registry};
 
 #[derive(Parser)]
@@ -82,7 +82,11 @@ fn parse_manifest(content: &str) -> Option<(usize, usize, DocumentMut)> {
 }
 
 async fn get_latest_version(name: &str) -> String {
-    let client = reqwest::Client::builder().user_agent("rsx-cli").build().ok();
+    let client = reqwest::Client::builder()
+        .user_agent("rsx-cli")
+        .timeout(std::time::Duration::from_secs(2)) // Don't hang the CLI
+        .build()
+        .ok();
     if let Some(c) = client {
         if let Ok(resp) = c.get(format!("https://crates.io/api/v1/crates/{}", name)).send().await {
             if let Ok(json) = resp.json::<serde_json::Value>().await {
@@ -99,18 +103,23 @@ async fn add_dep(path: &PathBuf, name: &str, features: Vec<String>) -> Result<()
     let content = fs::read_to_string(path).unwrap_or_default();
     println!("🔍 Searching Crates.io for {}...", name);
     let version = get_latest_version(name).await;
+    
     let (start, end, mut doc) = parse_manifest(&content).unwrap_or((0, 0, DocumentMut::new()));
 
-    let mut dep_item = Item::Value(toml_edit::Value::from(version.clone()));
-    if !features.is_empty() {
+    if features.is_empty() {
+        // Direct insertion using the value helper (requires toml_edit::value)
+        doc["dependencies"][name] = toml_edit::value(version);
+    } else {
         let mut table = toml_edit::InlineTable::default();
-        table.insert("version", version.into());
+        table.insert("version", toml_edit::Value::from(version));
+        
         let mut feats = toml_edit::Array::default();
         for f in features { feats.push(f); }
-        table.insert("features", value(feats));
-        dep_item = value(table);
+        table.insert("features", toml_edit::Value::from(feats));
+        
+        // Direct insertion into the document
+        doc["dependencies"][name] = toml_edit::Item::Value(toml_edit::Value::InlineTable(table));
     }
-    doc["dependencies"][name] = dep_item;
 
     let mut final_content = content.clone();
     if start == 0 {
@@ -118,8 +127,9 @@ async fn add_dep(path: &PathBuf, name: &str, features: Vec<String>) -> Result<()
     } else {
         final_content.replace_range(start..end, &doc.to_string());
     }
+    
     fs::write(path, final_content)?;
-    println!("✅ Added {} v{} to {}", name, version, path.display());
+    println!("✅ Added {} to {}", name, path.display());
     Ok(())
 }
 
