@@ -3,7 +3,7 @@ use clap::{Parser, Subcommand, ValueEnum};
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
-use toml_edit::{DocumentMut, Item};
+use toml_edit::DocumentMut;
 use update_informer::{Check, registry};
 
 #[derive(Parser)]
@@ -136,25 +136,38 @@ async fn add_dep(path: &PathBuf, name: &str, features: Vec<String>) -> Result<()
 fn run_script(path: &PathBuf, args: Vec<String>) -> Result<()> {
     let content = fs::read_to_string(path)?;
     let mut dep_flags = Vec::new();
-    if let Some((_, _, doc)) = parse_manifest(&content) {
+
+    // The underscores satisfy the compiler for the run command
+    if let Some((_start, _end, doc)) = parse_manifest(&content) {
         if let Some(deps) = doc.get("dependencies").and_then(|d| d.as_table()) {
             for (name, item) in deps.iter() {
                 dep_flags.push("--dep".to_string());
+                
                 let spec = match item {
-                    Item::Value(toml_edit::Value::String(s)) => format!("{}={}", name, s.value()),
+                    toml_edit::Item::Value(toml_edit::Value::String(s)) => {
+                        format!("{}={}", name, s.value())
+                    }
                     _ => {
                         let v = item.get("version").and_then(|i| i.as_str()).unwrap_or("*");
                         let f = item.get("features").and_then(|i| i.as_array())
                             .map(|a| a.iter().map(|v| v.as_str().unwrap_or("")).collect::<Vec<_>>().join(","))
                             .unwrap_or_default();
-                        if f.is_empty() { format!("{}={}", name, v) } else { format!("{}:{}/{}", name, v, f) }
+                        
+                        if f.is_empty() { format!("{}={}", name, v) } 
+                        else { format!("{}:{}/{}", name, v, f) }
                     }
                 };
                 dep_flags.push(spec);
             }
         }
     }
-    Command::new("rust-script").args(dep_flags).arg(path).args(args).status()?;
+
+    Command::new("rust-script")
+        .args(dep_flags)
+        .arg(path)
+        .args(args)
+        .status()?;
+
     Ok(())
 }
 
