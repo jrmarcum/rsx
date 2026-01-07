@@ -19,3 +19,6 @@ serde_json = "1.0"
 # Utilities
 anyhow = "1.0"
 update-informer = "1.1"
+# Wasmtime integration
+wasmtime = "29.0"
+wasmtime-wasi = "29.0"
