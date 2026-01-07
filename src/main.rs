@@ -60,32 +60,40 @@ async fn main() -> Result<()> {
 }
 
 async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<PathBuf>) -> Result<()> {
-    let triple = match target {
-        BuildTarget::Wasm => "wasm32-unknown-unknown",
-        BuildTarget::Wasi => "wasm32-wasip1",
+    let (triple, folder_name) = match target {
+        BuildTarget::Wasm => ("wasm32-unknown-unknown", "wasm-mod"),
+        BuildTarget::Wasi => ("wasm32-wasip1", "wasm-wasi"),
     };
 
-    // 1. Resolve the FINAL destination path before we start changing directories
-    let final_out = out.unwrap_or_else(|| {
-        let mut p = path.clone();
-        p.set_extension("wasm");
-        PathBuf::from(p.file_name().unwrap())
-    });
-    // Create an absolute path for the destination to avoid "Path not found" during copy
-    let absolute_out = std::env::current_dir()?.join(final_out);
-
-    let content = fs::read_to_string(path)?;
-    let (_start, end, doc) = parse_manifest(&content)
-        .context("Script requires a --- front-matter block.")?;
-
+    // 1. Resolve paths relative to the SCRIPT file location
+    let script_abs = path.canonicalize().context("Could not find script path")?;
+    let script_dir = script_abs.parent().context("Could not get script directory")?;
     let stem = path.file_stem().unwrap().to_str().unwrap();
-    let local_build_dir = std::env::current_dir()?.join(format!(".rsxtk_build_{}", stem));
+
+    // 2. Setup the output directory (wasm-wasi or wasm-mod)
+    let output_dir = script_dir.join(folder_name);
+    fs::create_dir_all(&output_dir).context("Failed to create output directory")?;
+
+    // 3. Define the final output file path
+    let final_filename = out.unwrap_or_else(|| {
+        let mut p = PathBuf::from(stem);
+        p.set_extension("wasm");
+        p
+    });
+    let absolute_out = output_dir.join(final_filename);
+
+    // 4. Setup Local Build Directory (Synthetic Project)
+    let local_build_dir = script_dir.join(format!(".rsxtk_build_{}_{}", stem, folder_name));
     let src_dir = local_build_dir.join("src");
     
     if local_build_dir.exists() { let _ = fs::remove_dir_all(&local_build_dir); }
     fs::create_dir_all(&src_dir)?;
 
-    // 2. Generate a standard Cargo.toml with an explicit binary target
+    // 5. Manifest and Source extraction
+    let content = fs::read_to_string(&script_abs)?;
+    let (_start, end, doc) = parse_manifest(&content)
+        .context("Script requires a --- front-matter block.")?;
+
     let mut manifest = doc.clone();
     let mut pkg = toml_edit::Table::new();
     pkg.insert("name", toml_edit::value("wasm_out")); 
@@ -93,7 +101,7 @@ async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<Pa
     pkg.insert("edition", toml_edit::value("2021"));
     manifest.insert("package", toml_edit::Item::Table(pkg));
     
-    // Force binary target to prevent Cargo from defaulting to a library
+    // Force binary target for WASI compatibility
     let mut bin = toml_edit::ArrayOfTables::new();
     let mut target_bin = toml_edit::Table::new();
     target_bin.insert("name", toml_edit::value("wasm_out"));
@@ -103,16 +111,15 @@ async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<Pa
 
     fs::write(local_build_dir.join("Cargo.toml"), manifest.to_string())?;
 
-    let after_first_marker = &content[end..];
-    let actual_code = match after_first_marker.find("---") {
-        Some(pos) => after_first_marker[pos + 3..].trim_start(),
-        None => after_first_marker.trim_start(),
+    let actual_code = match content[end..].find("---") {
+        Some(pos) => content[end + pos + 3..].trim_start(),
+        None => content[end..].trim_start(),
     };
     fs::write(src_dir.join("main.rs"), actual_code)?;
 
-    println!("⚒️ Compiling {} for {}...", path.display(), triple);
+    println!("⚒️ Compiling {} for {}...", stem, triple);
 
-    // 3. Run Build
+    // 6. Build
     let status = Command::new("cargo")
         .arg("build")
         .arg("--release")
@@ -124,20 +131,18 @@ async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<Pa
     if status.success() {
         let release_dir = local_build_dir.join("target").join(triple).join("release");
         
-        // 4. Robust file discovery
         let wasm_src = fs::read_dir(&release_dir)?
             .filter_map(|entry| entry.ok())
             .map(|e| e.path())
             .find(|p| p.extension().map_or(false, |ext| ext == "wasm"))
-            .context(format!("No .wasm file found in release directory"))?;
+            .context("No .wasm file found in release directory")?;
 
-        // 5. Explicit copy to absolute path
+        // 7. Copy to the organized folder
         fs::copy(&wasm_src, &absolute_out)
-            .with_context(|| format!("Failed to copy {} to {}", wasm_src.display(), absolute_out.display()))?;
+            .with_context(|| format!("OS Error 3 fix: Failed copy from {} to {}", wasm_src.display(), absolute_out.display()))?;
             
-        println!("✨ Success! Module created: {}", absolute_out.file_name().unwrap().to_string_lossy());
+        println!("✨ Success! Created: {}/{}", folder_name, absolute_out.file_name().unwrap().to_string_lossy());
         
-        // Final cleanup
         let _ = fs::remove_dir_all(local_build_dir);
     } else {
         anyhow::bail!("Cargo build failed.");
