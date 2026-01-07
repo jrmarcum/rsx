@@ -65,6 +65,15 @@ async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<Pa
         BuildTarget::Wasi => "wasm32-wasip1",
     };
 
+    // 1. Resolve the FINAL destination path before we start changing directories
+    let final_out = out.unwrap_or_else(|| {
+        let mut p = path.clone();
+        p.set_extension("wasm");
+        PathBuf::from(p.file_name().unwrap())
+    });
+    // Create an absolute path for the destination to avoid "Path not found" during copy
+    let absolute_out = std::env::current_dir()?.join(final_out);
+
     let content = fs::read_to_string(path)?;
     let (_start, end, doc) = parse_manifest(&content)
         .context("Script requires a --- front-matter block.")?;
@@ -76,7 +85,7 @@ async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<Pa
     if local_build_dir.exists() { let _ = fs::remove_dir_all(&local_build_dir); }
     fs::create_dir_all(&src_dir)?;
 
-    // FIX 1: Explicitly define [[bin]] in the synthetic Cargo.toml
+    // 2. Generate a standard Cargo.toml with an explicit binary target
     let mut manifest = doc.clone();
     let mut pkg = toml_edit::Table::new();
     pkg.insert("name", toml_edit::value("wasm_out")); 
@@ -84,7 +93,7 @@ async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<Pa
     pkg.insert("edition", toml_edit::value("2021"));
     manifest.insert("package", toml_edit::Item::Table(pkg));
     
-    // This ensures a binary (with _start) is generated for WASI
+    // Force binary target to prevent Cargo from defaulting to a library
     let mut bin = toml_edit::ArrayOfTables::new();
     let mut target_bin = toml_edit::Table::new();
     target_bin.insert("name", toml_edit::value("wasm_out"));
@@ -103,6 +112,7 @@ async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<Pa
 
     println!("⚒️ Compiling {} for {}...", path.display(), triple);
 
+    // 3. Run Build
     let status = Command::new("cargo")
         .arg("build")
         .arg("--release")
@@ -112,32 +122,25 @@ async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<Pa
         .status()?;
 
     if status.success() {
-        // FIX 2: Better path resolution for Windows G: drive
         let release_dir = local_build_dir.join("target").join(triple).join("release");
         
-        // Scan the directory for the wasm file
+        // 4. Robust file discovery
         let wasm_src = fs::read_dir(&release_dir)?
             .filter_map(|entry| entry.ok())
             .map(|e| e.path())
             .find(|p| p.extension().map_or(false, |ext| ext == "wasm"))
-            .context(format!("No .wasm file found in {}", release_dir.display()))?;
+            .context(format!("No .wasm file found in release directory"))?;
 
-        let final_out = out.unwrap_or_else(|| {
-            let mut p = path.clone();
-            p.set_extension("wasm");
-            PathBuf::from(p.file_name().unwrap())
-        });
-
-        // FIX 3: Robust Copy
-        fs::copy(&wasm_src, &final_out)
-            .with_context(|| format!("Failed to copy {} to {}", wasm_src.display(), final_out.display()))?;
+        // 5. Explicit copy to absolute path
+        fs::copy(&wasm_src, &absolute_out)
+            .with_context(|| format!("Failed to copy {} to {}", wasm_src.display(), absolute_out.display()))?;
             
-        println!("✨ Success! Module created: {}", final_out.display());
+        println!("✨ Success! Module created: {}", absolute_out.file_name().unwrap().to_string_lossy());
         
-        // Cleanup ONLY after successful copy
+        // Final cleanup
         let _ = fs::remove_dir_all(local_build_dir);
     } else {
-        anyhow::bail!("Cargo build failed. Keep the .rsxtk_build folder to inspect errors.");
+        anyhow::bail!("Cargo build failed.");
     }
 
     Ok(())
