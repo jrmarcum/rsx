@@ -10,7 +10,7 @@ use wasmtime_wasi::preview1::{self, WasiP1Ctx};
 use wasmtime_wasi::{WasiCtxBuilder, DirPerms, FilePerms};
 
 #[derive(Parser)]
-#[command(name = "rsxtk", version = "0.5.0", about = "Rust Script & WASM Toolkit")]
+#[command(name = "rsxtk", version = "0.5.1", about = "Rust Script & WASM Toolkit")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -22,12 +22,12 @@ enum Commands {
     Init { script: PathBuf },
     /// 🧩 Initialize a WASM Library (module) template
     InitMod { script: PathBuf },
-    /// ➕ Add a dependency (Creates manifest if missing)
+    /// ➕ Add a dependency
     Add { script: PathBuf, dependency: String, #[arg(short, long, value_delimiter = ',')] features: Vec<String> },
     /// 🗑️ Remove a dependency
     #[command(alias = "rm")]
     Remove { script: PathBuf, dependency: String },
-    /// 📦 List dependencies (.rs) or exports (.wasm)
+    /// 📦 List dependencies (.rs) or exports (.wasm/.wat)
     #[command(alias = "ls")]
     List { path: PathBuf },
     /// ⚙️ Build the script into WASM
@@ -95,8 +95,6 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-// --- CORE ENGINE LOGIC ---
-
 async fn run_wasm_internal(path: &PathBuf, invoke: Option<String>, args: Vec<String>) -> Result<()> {
     let mut config = Config::new();
     config.async_support(true); 
@@ -118,7 +116,6 @@ async fn run_wasm_internal(path: &PathBuf, invoke: Option<String>, args: Vec<Str
     let instance = linker.instantiate_async(&mut store, &module).await?;
 
     if let Some(func_name) = invoke {
-        // Simple 1-2 arg dispatcher
         if args.len() >= 2 {
             let func = instance.get_typed_func::<(i32, i32), i32>(&mut store, &func_name)?;
             let a: i32 = args[0].parse().unwrap_or(0);
@@ -133,13 +130,11 @@ async fn run_wasm_internal(path: &PathBuf, invoke: Option<String>, args: Vec<Str
         }
     } else {
         let start = instance.get_typed_func::<(), ()>(&mut store, "_start")
-            .context("No '_start' found. (Ensure you export _start in your code)")?;
+            .context("No '_start' found. (WASI modules require an exported _start function)")?;
         start.call_async(&mut store, ()).await?;
     }
     Ok(())
 }
-
-// --- CONVERSION LOGIC ---
 
 fn convert_wasm_format(input: &PathBuf, output: Option<PathBuf>) -> Result<()> {
     let input_bytes = fs::read(input).context("Failed to read input file")?;
@@ -147,12 +142,12 @@ fn convert_wasm_format(input: &PathBuf, output: Option<PathBuf>) -> Result<()> {
 
     let (out_bytes, new_ext) = match ext {
         "wat" => {
-            println!("⚙️  Compiling WAT to WASM...");
+            println!("⚙️  Compiling WAT ➔ WASM...");
             let bin = wat::parse_bytes(&input_bytes).map_err(|e| anyhow::anyhow!("Parse Error: {}", e))?;
             (bin.to_vec(), "wasm")
         }
         "wasm" => {
-            println!("⚙️  Decompiling WASM to WAT...");
+            println!("⚙️  Decompiling WASM ➔ WAT...");
             let text = wasmprinter::print_bytes(&input_bytes).map_err(|e| anyhow::anyhow!("Print Error: {}", e))?;
             (text.into_bytes(), "wat")
         }
@@ -166,11 +161,9 @@ fn convert_wasm_format(input: &PathBuf, output: Option<PathBuf>) -> Result<()> {
     });
 
     fs::write(&final_output, out_bytes)?;
-    println!("✨ Successfully converted to: {}", final_output.display());
+    println!("✨ Saved to: {}", final_output.display());
     Ok(())
 }
-
-// --- BUILD LOGIC ---
 
 async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<PathBuf>) -> Result<()> {
     let (triple, folder_name) = match target {
@@ -188,13 +181,12 @@ async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<Pa
 
     let local_build_dir = script_dir.join(format!(".rsxtk_build_{}", stem));
     let src_dir = local_build_dir.join("src");
-    if local_build_dir.exists() { fs::remove_dir_all(&local_build_dir)?; }
+    if local_build_dir.exists() { let _ = fs::remove_dir_all(&local_build_dir); }
     fs::create_dir_all(&src_dir)?;
 
     let content = fs::read_to_string(&script_abs)?;
     let (code_start, mut manifest) = parse_manifest(&content).unwrap_or_else(|| (0, DocumentMut::new()));
 
-    // Package Setup
     manifest.remove("bin"); manifest.remove("lib");
     let mut pkg = toml_edit::Table::new();
     pkg.insert("name", toml_edit::value("wasm_out"));
@@ -230,20 +222,14 @@ async fn build_script_stable(path: &PathBuf, target: BuildTarget, out: Option<Pa
         .current_dir(&local_build_dir).status()?;
 
     if status.success() {
-        let wasm_src = find_newest_wasm(&local_build_dir, build_start_time);
-        match wasm_src {
-            Some(src) => {
-                fs::copy(&src, &absolute_out)?;
-                println!("✨ Created: {}", absolute_out.display());
-                let _ = fs::remove_dir_all(local_build_dir);
-            },
-            None => return Err(anyhow::anyhow!("Cargo build succeeded but no .wasm was found.")),
+        if let Some(src) = find_newest_wasm(&local_build_dir, build_start_time) {
+            fs::copy(&src, &absolute_out)?;
+            println!("✨ Created: {}", absolute_out.display());
+            let _ = fs::remove_dir_all(local_build_dir);
         }
     }
     Ok(())
 }
-
-// --- HELPERS ---
 
 fn find_newest_wasm(root: &Path, start_time: SystemTime) -> Option<PathBuf> {
     let mut newest_file = None;
