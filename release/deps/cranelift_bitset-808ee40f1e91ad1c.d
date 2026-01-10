@@ -1,9 +1,0 @@
-D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\release\deps\cranelift_bitset-808ee40f1e91ad1c.d: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cranelift-bitset-0.116.1\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cranelift-bitset-0.116.1\src\compound.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cranelift-bitset-0.116.1\src\scalar.rs
-
-D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\release\deps\libcranelift_bitset-808ee40f1e91ad1c.rlib: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cranelift-bitset-0.116.1\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cranelift-bitset-0.116.1\src\compound.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cranelift-bitset-0.116.1\src\scalar.rs
-
-D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\release\deps\libcranelift_bitset-808ee40f1e91ad1c.rmeta: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cranelift-bitset-0.116.1\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cranelift-bitset-0.116.1\src\compound.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cranelift-bitset-0.116.1\src\scalar.rs
-
-C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cranelift-bitset-0.116.1\src\lib.rs:
-C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cranelift-bitset-0.116.1\src\compound.rs:
-C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cranelift-bitset-0.116.1\src\scalar.rs:

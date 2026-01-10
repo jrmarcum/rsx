@@ -1,8 +1,0 @@
-D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\release\build\target-lexicon-167b9a37d43e7fad\build_script_build-167b9a37d43e7fad.d: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\target-lexicon-0.13.4\build.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\target-lexicon-0.13.4\src/data_model.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\target-lexicon-0.13.4\src/triple.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\target-lexicon-0.13.4\src/targets.rs
-
-D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\release\build\target-lexicon-167b9a37d43e7fad\build_script_build-167b9a37d43e7fad.exe: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\target-lexicon-0.13.4\build.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\target-lexicon-0.13.4\src/data_model.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\target-lexicon-0.13.4\src/triple.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\target-lexicon-0.13.4\src/targets.rs
-
-C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\target-lexicon-0.13.4\build.rs:
-C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\target-lexicon-0.13.4\src/data_model.rs:
-C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\target-lexicon-0.13.4\src/triple.rs:
-C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\target-lexicon-0.13.4\src/targets.rs:
