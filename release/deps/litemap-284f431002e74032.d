@@ -1,0 +1,10 @@
+D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\release\deps\litemap-284f431002e74032.d: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\map.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\store\mod.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\store\slice_impl.rs
+
+D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\release\deps\liblitemap-284f431002e74032.rlib: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\map.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\store\mod.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\store\slice_impl.rs
+
+D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\release\deps\liblitemap-284f431002e74032.rmeta: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\map.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\store\mod.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\store\slice_impl.rs
+
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\lib.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\map.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\store\mod.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\litemap-0.8.1\src\store\slice_impl.rs:

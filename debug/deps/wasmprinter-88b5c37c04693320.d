@@ -1,0 +1,8 @@
+D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\debug\deps\wasmprinter-88b5c37c04693320.d: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmprinter-0.221.3\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmprinter-0.221.3\src\component.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmprinter-0.221.3\src\operator.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmprinter-0.221.3\src\print.rs
+
+D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\debug\deps\libwasmprinter-88b5c37c04693320.rmeta: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmprinter-0.221.3\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmprinter-0.221.3\src\component.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmprinter-0.221.3\src\operator.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmprinter-0.221.3\src\print.rs
+
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmprinter-0.221.3\src\lib.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmprinter-0.221.3\src\component.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmprinter-0.221.3\src\operator.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmprinter-0.221.3\src\print.rs:

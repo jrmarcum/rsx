@@ -1,0 +1,8 @@
+D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\debug\deps\iana_time_zone-4d19044d9cf5d8fe.d: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\iana-time-zone-0.1.64\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\iana-time-zone-0.1.64\src\ffi_utils.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\iana-time-zone-0.1.64\src\tz_windows.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\iana-time-zone-0.1.64\src\windows_bindings.rs
+
+D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\debug\deps\libiana_time_zone-4d19044d9cf5d8fe.rmeta: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\iana-time-zone-0.1.64\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\iana-time-zone-0.1.64\src\ffi_utils.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\iana-time-zone-0.1.64\src\tz_windows.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\iana-time-zone-0.1.64\src\windows_bindings.rs
+
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\iana-time-zone-0.1.64\src\lib.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\iana-time-zone-0.1.64\src\ffi_utils.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\iana-time-zone-0.1.64\src\tz_windows.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\iana-time-zone-0.1.64\src\windows_bindings.rs:

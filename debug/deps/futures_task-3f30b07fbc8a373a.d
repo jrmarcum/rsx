@@ -1,0 +1,8 @@
+D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\debug\deps\futures_task-3f30b07fbc8a373a.d: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\futures-task-0.3.31\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\futures-task-0.3.31\src\spawn.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\futures-task-0.3.31\src\future_obj.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\futures-task-0.3.31\src\noop_waker.rs
+
+D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\debug\deps\libfutures_task-3f30b07fbc8a373a.rmeta: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\futures-task-0.3.31\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\futures-task-0.3.31\src\spawn.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\futures-task-0.3.31\src\future_obj.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\futures-task-0.3.31\src\noop_waker.rs
+
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\futures-task-0.3.31\src\lib.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\futures-task-0.3.31\src\spawn.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\futures-task-0.3.31\src\future_obj.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\futures-task-0.3.31\src\noop_waker.rs:

@@ -1,0 +1,9 @@
+D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\debug\deps\io_lifetimes-f7fdae8bb87575c1.d: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\portability.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\traits.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\raw.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\views.rs
+
+D:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\.\debug\deps\libio_lifetimes-f7fdae8bb87575c1.rmeta: C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\lib.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\portability.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\traits.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\raw.rs C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\views.rs
+
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\lib.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\portability.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\traits.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\raw.rs:
+C:\Users\Jmarcum\TEMP\CARGO\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\io-lifetimes-2.0.4\src\views.rs:
