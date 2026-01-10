@@ -14,12 +14,12 @@ anyhow = "1.0"
 tokio = { version = "1.36", features = ["full"] }
 
 # The WebAssembly engine (v29 is the current stable target for this logic)
-wasmtime = { version = "29.0.0", features = ["async"] }
+wasmtime = { version = "40.0.1", features = ["async"] }
 
 # The WASI interface (note the hyphen in the package name)
-wasmtime-wasi = { version = "29.0.1", features = ["preview1"] }
+wasmtime-wasi = { version = "40.0.1", features = ["preview1"] }
 
 # Essential for parsing .wat text files into binary bytes
 wat = "1.211.0"
 wasmprinter = "0.244.0"
-walrus = "0.20.0"
+walrus = "0.24.4"
