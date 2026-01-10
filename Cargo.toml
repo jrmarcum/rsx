@@ -1,25 +1,14 @@
 [package]
 name = "rsxtk"
-version = "0.9.5"
-edition = "2021"
+version = "0.3.1"
+edition = "2024"
 
 [dependencies]
-# For CLI argument parsing
-clap = { version = "4.5", features = ["derive"] }
-
-# For robust error handling
-anyhow = "1.0"
-
-# Async support is required for the latest wasmtime versions
-tokio = { version = "1.36", features = ["full"] }
-
-# The WebAssembly engine (v29 is the current stable target for this logic)
-wasmtime = { version = "40.0.1", features = ["async"] }
-
-# The WASI interface (note the hyphen in the package name)
-wasmtime-wasi = { version = "40.0.1", features = ["preview1"] }
-
-# Essential for parsing .wat text files into binary bytes
-wat = "1.211.0"
+anyhow = "1.0.100"
+clap = { version = "4.5.54", features = ["derive"] }
+tokio = { version = "1.49.0", features = ["full"] }
+wasmtime = "40.0.1"
+wasmtime-wasi = { version = "40.0.1", features = ["p1"] }
+wat = "1.244.0"
 wasmprinter = "0.244.0"
 walrus = "0.24.4"
