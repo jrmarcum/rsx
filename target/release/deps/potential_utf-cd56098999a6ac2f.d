@@ -1,0 +1,9 @@
+G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\potential_utf-cd56098999a6ac2f.d: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\potential_utf-0.1.4\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\potential_utf-0.1.4\src\uchar.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\potential_utf-0.1.4\src\ustr.rs
+
+G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\libpotential_utf-cd56098999a6ac2f.rlib: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\potential_utf-0.1.4\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\potential_utf-0.1.4\src\uchar.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\potential_utf-0.1.4\src\ustr.rs
+
+G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\libpotential_utf-cd56098999a6ac2f.rmeta: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\potential_utf-0.1.4\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\potential_utf-0.1.4\src\uchar.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\potential_utf-0.1.4\src\ustr.rs
+
+C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\potential_utf-0.1.4\src\lib.rs:
+C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\potential_utf-0.1.4\src\uchar.rs:
+C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\potential_utf-0.1.4\src\ustr.rs:

@@ -1,0 +1,1 @@
+{"rustc":7895727629726570510,"features":"","declared_features":"","target":0,"profile":0,"path":0,"deps":[[7594865283157881361,"build_script_build",false,22021150570376389]],"local":[{"RerunIfChanged":{"output":"release\\build\\cap-primitives-fb263b9b88ba7ab4\\output","paths":["build.rs"]}}],"rustflags":[],"config":0,"compile_kind":0}

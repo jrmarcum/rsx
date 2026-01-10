@@ -1,0 +1,9 @@
+G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\wasmtime_internal_component_macro-0aeff7456f9acffc.d: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmtime-internal-component-macro-40.0.1\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmtime-internal-component-macro-40.0.1\src\bindgen.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmtime-internal-component-macro-40.0.1\src\component.rs
+
+G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\wasmtime_internal_component_macro-0aeff7456f9acffc.dll: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmtime-internal-component-macro-40.0.1\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmtime-internal-component-macro-40.0.1\src\bindgen.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmtime-internal-component-macro-40.0.1\src\component.rs
+
+C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmtime-internal-component-macro-40.0.1\src\lib.rs:
+C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmtime-internal-component-macro-40.0.1\src\bindgen.rs:
+C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasmtime-internal-component-macro-40.0.1\src\component.rs:
+
+# env-dep:DEBUG_OUTPUT_DIR=G:\\Programs\\_ProgramExamples\\Example_Programs\\Rust\\GithubProjects\\rsxtk\\target\\release\\build\\wasmtime-internal-component-macro-8b97901cdf44f52f\\out
