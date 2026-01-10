@@ -1,3 +1,0 @@
-vec![
-  "G:\\Programs\\_ProgramExamples\\Example_Programs\\Rust\\GithubProjects\\rsxtk\\target\\release\\build\\cranelift-assembler-x64-250888ec855a0d87\\out\\assembler.rs".into(),
-]

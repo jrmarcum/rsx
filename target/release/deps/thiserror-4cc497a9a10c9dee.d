@@ -1,9 +1,0 @@
-G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\thiserror-4cc497a9a10c9dee.d: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-1.0.69\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-1.0.69\src\aserror.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-1.0.69\src\display.rs
-
-G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\libthiserror-4cc497a9a10c9dee.rlib: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-1.0.69\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-1.0.69\src\aserror.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-1.0.69\src\display.rs
-
-G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\libthiserror-4cc497a9a10c9dee.rmeta: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-1.0.69\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-1.0.69\src\aserror.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-1.0.69\src\display.rs
-
-C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-1.0.69\src\lib.rs:
-C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-1.0.69\src\aserror.rs:
-C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\thiserror-1.0.69\src\display.rs:

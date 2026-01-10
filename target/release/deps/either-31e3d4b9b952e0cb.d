@@ -1,9 +1,0 @@
-G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\either-31e3d4b9b952e0cb.d: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\either-1.15.0\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\either-1.15.0\src\iterator.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\either-1.15.0\src\into_either.rs
-
-G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\libeither-31e3d4b9b952e0cb.rlib: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\either-1.15.0\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\either-1.15.0\src\iterator.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\either-1.15.0\src\into_either.rs
-
-G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\libeither-31e3d4b9b952e0cb.rmeta: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\either-1.15.0\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\either-1.15.0\src\iterator.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\either-1.15.0\src\into_either.rs
-
-C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\either-1.15.0\src\lib.rs:
-C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\either-1.15.0\src\iterator.rs:
-C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\either-1.15.0\src\into_either.rs:

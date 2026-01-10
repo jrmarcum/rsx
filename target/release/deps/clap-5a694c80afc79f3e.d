@@ -1,9 +1,0 @@
-G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\clap-5a694c80afc79f3e.d: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-4.5.54\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-4.5.54\src\../examples/demo.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-4.5.54\src\../examples/demo.md
-
-G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\libclap-5a694c80afc79f3e.rlib: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-4.5.54\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-4.5.54\src\../examples/demo.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-4.5.54\src\../examples/demo.md
-
-G:\Programs\_ProgramExamples\Example_Programs\Rust\GithubProjects\rsxtk\target\release\deps\libclap-5a694c80afc79f3e.rmeta: C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-4.5.54\src\lib.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-4.5.54\src\../examples/demo.rs C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-4.5.54\src\../examples/demo.md
-
-C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-4.5.54\src\lib.rs:
-C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-4.5.54\src\../examples/demo.rs:
-C:\Users\jrmar\scoop\apps\rustup-msvc\current\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-4.5.54\src\../examples/demo.md:
