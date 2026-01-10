@@ -3,8 +3,9 @@ use clap::{Parser, Subcommand};
 use std::fs;
 use std::path::{Path, PathBuf};
 use wasmtime::{Engine, Linker, Module, Store};
-use wasmtime_wasi::{WasiCtx, WasiCtxBuilder, WasiView, ResourceTable};
-use wasmtime_wasi::preview1;
+// Updated imports for modern Wasmtime WASI
+use wasmtime_wasi::WasiCtxBuilder;
+use wasmtime_wasi::preview1::{self, WasiP1Ctx};
 
 #[derive(Parser)]
 #[command(name = "rsxtk")]
@@ -36,15 +37,9 @@ enum Commands {
     },
 }
 
-// In Wasmtime 29+, the Store state must provide access to WASI context and a resource table
+// Preview1 uses WasiP1Ctx specifically for traditional WASI compatibility
 struct MyState {
-    ctx: WasiCtx,
-    table: ResourceTable,
-}
-
-impl WasiView for MyState {
-    fn ctx(&mut self) -> &mut WasiCtx { &mut self.ctx }
-    fn table(&mut self) -> &mut ResourceTable { &mut self.table }
+    wasi: WasiP1Ctx,
 }
 
 fn main() -> Result<()> {
@@ -105,24 +100,20 @@ fn run_wasm(path: &Path) -> Result<()> {
         Module::from_file(&engine, path)?
     };
 
-    // Define the linker explicitly for your state
     let mut linker: Linker<MyState> = Linker::new(&engine);
     
-    // FIX: Use the Preview1 (Core WASM) specific linker function
-    preview1::add_to_linker_sync(&mut linker)?;
+    // FIX: Provide the closure that points to the WASI context in our state
+    preview1::add_to_linker_sync(&mut linker, |state| &mut state.wasi)?;
 
+    // Build the Preview 1 context
     let mut builder = WasiCtxBuilder::new();
     builder.inherit_stdio().inherit_args();
-    let wasi_ctx = builder.build();
-
+    
     let mut store = Store::new(&engine, MyState { 
-        ctx: wasi_ctx,
-        table: ResourceTable::new(),
+        wasi: builder.build_p1(), // Crucial: build_p1 for Core WASM
     });
 
     let instance = linker.instantiate(&mut store, &module)?;
-    
-    // Look for the standard WASI entry point
     let start = instance.get_typed_func::<(), ()>(&mut store, "_start")?;
     start.call(&mut store, ())?;
 
